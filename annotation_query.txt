@@ -1,0 +1,12 @@
+SELECT name,
+url,
+polygon,
+text,
+class_name,
+state
+FROM element
+JOIN image ON element.image_id = image.id
+JOIN transcription ON element.id = transcription.element_id
+JOIN classification ON element.id = classification.element_id
+WHERE polygon NOT NULL
+AND name LIKE 'CZ%'
