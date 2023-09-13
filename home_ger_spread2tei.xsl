@@ -2,6 +2,9 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tei="http://www.tei-c.org/ns/1.0"
     xpath-default-namespace="http://www.tei-c.org/ns/1.0" exclude-result-prefixes="xs" version="2.0">
+    
+    <xsl:variable name="prefix" select="'home_ger_'"/>
+    
     <xsl:template match="/">
         <tei:TEI>
             <xsl:apply-templates/>
@@ -30,7 +33,7 @@
 
     <xsl:template match="row[parent::table[1] and position() > 1]">
         <xsl:if test="cell[1]/text() != '' and not(cell[1]/text() = preceding-sibling::*/cell[1]/text())">
-            <tei:person xml:id="{concat('home_ger_', replace(cell[1], '/', '_'))}">
+            <tei:person xml:id="{concat($prefix, replace(cell[1], '/', '_'))}">
                 <xsl:if test="cell[3]/text() != ''">
                     <tei:persName xml:lang="cz">
                         <xsl:value-of select="cell[3]"/>
@@ -78,6 +81,13 @@
                     <tei:certainty locus="name">
                         <tei:desc>
                             <xsl:value-of select="cell[2]/text()"/>
+                            <xsl:if test="contains(cell[1], '/')">
+                                <xsl:variable name="tokens" select="tokenize(cell[1], '/')"/>
+                                <xsl:text>: </xsl:text>
+                                <xsl:value-of select="concat($prefix, $tokens[1])"/>
+                                <xsl:text>, </xsl:text>
+                                <xsl:value-of select="concat($prefix, $tokens[2])"/>
+                            </xsl:if>
                         </tei:desc>
                     </tei:certainty>
                 </xsl:if>
